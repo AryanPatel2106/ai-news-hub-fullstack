@@ -42,7 +42,22 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
+// ADD THIS NEW BLOCK OF CODE
 
+// --- MANUAL TRIGGER ENDPOINT ---
+// This is a secret URL to manually trigger the news fetch job.
+// We add a simple secret key to prevent others from running it.
+app.get('/api/trigger-fetch', async (req, res) => {
+  const secret = req.query.secret;
+  if (secret !== process.env.CRON_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  console.log('MANUAL TRIGGER: Starting manual news fetch...');
+  // Run the job but don't wait for it to finish before responding
+  fetchNewsAndStore(); 
+  res.status(202).json({ message: 'News fetch job triggered successfully. It will run in the background.' });
+});
 // --- THE NEW AND IMPROVED NEWS FETCHING LOGIC ---
 
 // These are the keywords we will search for.
