@@ -90,9 +90,9 @@ const fetchNewsAndStore = async () => {
       console.log(`-- Successfully stored articles for topic: ${topic}`);
     } catch (err) {
       if (err.response && err.response.status === 426) {
-         console.error(`Error for topic "${topic}": NewsAPI free plan cannot be used on a server. This is a known limitation for localhost development.`);
+        console.error(`Error for topic "${topic}": NewsAPI free plan cannot be used on a server. This is a known limitation for localhost development.`);
       } else {
-         console.error(`Error fetching news for topic ${topic}:`, err.message);
+        console.error(`Error fetching news for topic ${topic}:`, err.message);
       }
     }
   }
@@ -102,8 +102,8 @@ const fetchNewsAndStore = async () => {
 const startServer = async () => {
   await db.setupDatabase();
 
-  app.listen(PORT, () => {
-    console.log(`Backend server is running on http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend server is live and listening on port ${PORT}`);
   });
 
   cron.schedule('0 * * * *', fetchNewsAndStore);
