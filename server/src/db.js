@@ -7,6 +7,12 @@ const pool = new Pool({
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  // THIS IS THE CRUCIAL NEW PART
+  // It tells our server to work inside our new schema
+  options: `-c search_path=news_hub_schema,public`
 });
 
 const setupDatabase = async () => {
