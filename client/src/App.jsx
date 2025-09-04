@@ -160,7 +160,7 @@ export default function App() {
             }
         };
         fetchArticles();
-    }, [activeCategory, allArticles]);
+    }, [activeCategory]);
 
     const articlesToDisplay = useMemo(() => {
         const articles = allArticles[activeCategory] || [];
