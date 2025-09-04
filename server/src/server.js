@@ -8,7 +8,16 @@ const db = require('./db');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:5173', // Your local frontend for testing
+    'https://news-hub-dining-room.onrender.com' // YOUR LIVE FRONTEND URL
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/api/articles', async (req, res) => {
