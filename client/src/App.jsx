@@ -4,9 +4,9 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 // --- SVG Icons ---
-const SearchIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> );
-const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
-const NewspaperIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4"/><path d="M4 22a2 2 0 0 0-2-2V4a2 2 0 0 0 2-2h4"/><path d="M18 22V4"/><path d="M12 22V4"/><path d="M8 12h4"/><path d="M8 17h4"/><path d="M8 7h4"/></svg>);
+const SearchIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>);
+const CloseIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>);
+const NewspaperIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4" /><path d="M4 22a2 2 0 0 0-2-2V4a2 2 0 0 0 2-2h4" /><path d="M18 22V4" /><path d="M12 22V4" /><path d="M8 12h4" /><path d="M8 17h4" /><path d="M8 7h4" /></svg>);
 
 
 // --- UPGRADED & NEW COMPONENTS ---
@@ -15,20 +15,20 @@ const Header = ({ searchTerm, setSearchTerm, activeCategory }) => (
     <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm p-4 sticky top-0 z-30">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-                 <div className="bg-gradient-to-tr from-blue-600 to-green-400 p-2 rounded-lg">
+                <div className="bg-gradient-to-tr from-blue-600 to-green-400 p-2 rounded-lg">
                     <NewspaperIcon />
-                 </div>
+                </div>
                 <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                     News Hub
                 </h1>
             </div>
             <div className="relative w-full sm:w-auto sm:max-w-xs">
                 <SearchIcon />
-                <input 
-                    type="text" 
-                    placeholder={`Search in ${activeCategory}...`} 
-                    value={searchTerm} 
-                    onChange={(e) => setSearchTerm(e.target.value)} 
+                <input
+                    type="text"
+                    placeholder={`Search in ${activeCategory}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-12 pr-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
             </div>
         </div>
@@ -49,11 +49,10 @@ const NavBar = ({ activeCategory, setActiveCategory }) => {
                         <li key={cat.apiName}>
                             <button
                                 onClick={() => setActiveCategory(cat.apiName)}
-                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
-                                    activeCategory === cat.apiName
-                                        ? 'bg-blue-600 text-white shadow-lg scale-105'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                                }`}
+                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${activeCategory === cat.apiName
+                                    ? 'bg-blue-600 text-white shadow-lg scale-105'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    }`}
                             >
                                 {cat.displayName}
                             </button>
@@ -143,32 +142,34 @@ export default function App() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // This is the NEW, CORRECT version
     useEffect(() => {
         const fetchArticles = async () => {
-            if (allArticles[activeCategory]) {
-                return;
-            }
+            // No need to check if articles exist here, we handle it in the render
             setLoading(true);
             setError(null);
             try {
                 const response = await axios.get(`${API_BASE_URL}/api/articles?category=${activeCategory}`);
-                setAllArticles(prev => ({ ...prev, [activeCategory]: response.data }));
+                // Use a non-caching state for simplicity and correctness
+                setAllArticles(response.data);
             } catch (err) {
                 setError("Failed to connect to the server. Is the backend running?");
             } finally {
                 setLoading(false);
             }
         };
+
         fetchArticles();
+        // The dependency array now ONLY watches for changes in the category
     }, [activeCategory]);
 
+    // NEW version
     const articlesToDisplay = useMemo(() => {
-        const articles = allArticles[activeCategory] || [];
-        if (!searchTerm) return articles;
-        return articles.filter(article =>
+        if (!searchTerm) return allArticles;
+        return allArticles.filter(article =>
             article.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
-    }, [allArticles, activeCategory, searchTerm]);
+    }, [allArticles, searchTerm]);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
@@ -178,16 +179,16 @@ export default function App() {
             <main className="container mx-auto p-4 md:p-6">
                 {loading && <LoadingState />}
                 {error && <div className="text-center text-red-500 bg-red-100 p-4 rounded-lg font-bold">{error}</div>}
-                
+
                 {!loading && !error && (
                     articlesToDisplay.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {articlesToDisplay.map((article) => ( <ArticleCard key={article.id} article={article} onArticleClick={setSelectedArticle} /> ))}
+                            {articlesToDisplay.map((article) => (<ArticleCard key={article.id} article={article} onArticleClick={setSelectedArticle} />))}
                         </div>
                     ) : <EmptyState />
                 )}
             </main>
-            
+
             <Footer />
             <ArticleDetailModal article={selectedArticle} onClose={() => setSelectedArticle(null)} />
         </div>
