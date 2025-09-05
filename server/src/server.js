@@ -8,18 +8,22 @@ const db = require('./db');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// ✅ FIXED CORS SETUP: Added your actual frontend domain
 const corsOptions = {
   origin: [
-    'http://localhost:5173', // Your local frontend for testing
-    'https://news-hub-dining-room.onrender.com' // YOUR LIVE FRONTEND URL
+    'http://localhost:5173',                // Local dev frontend
+    'https://ai-news-hub-client.onrender.com' // ✅ Your real deployed frontend
   ],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// --- API ROUTES ---
 app.get('/api/articles', async (req, res) => {
   const { category } = req.query;
 
@@ -42,11 +46,7 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
-// ADD THIS NEW BLOCK OF CODE
-
 // --- MANUAL TRIGGER ENDPOINT ---
-// This is a secret URL to manually trigger the news fetch job.
-// We add a simple secret key to prevent others from running it.
 app.get('/api/trigger-fetch', async (req, res) => {
   const secret = req.query.secret;
   if (secret !== process.env.CRON_SECRET) {
@@ -54,46 +54,38 @@ app.get('/api/trigger-fetch', async (req, res) => {
   }
 
   console.log('MANUAL TRIGGER: Starting manual news fetch...');
-  // Run the job but don't wait for it to finish before responding
-  fetchNewsAndStore(); 
+  fetchNewsAndStore();
   res.status(202).json({ message: 'News fetch job triggered successfully. It will run in the background.' });
 });
-// --- THE NEW AND IMPROVED NEWS FETCHING LOGIC ---
 
-// These are the keywords we will search for.
+// --- NEWS FETCHING LOGIC ---
 const CATEGORIES = ['technology', 'business', 'sports', 'science', 'health'];
-const HOME_PAGE_TOPIC = 'india'; // For the homepage, we'll get top news about India.
+const HOME_PAGE_TOPIC = 'india'; // For homepage, get top news about India.
 
 const fetchNewsAndStore = async () => {
   console.log('BACKGROUND JOB: Starting to fetch news for all categories...');
-
   const allTopics = [HOME_PAGE_TOPIC, ...CATEGORIES];
 
   for (const topic of allTopics) {
     console.log(`-- Fetching news for topic: ${topic}`);
     try {
-      // *** THE BIG CHANGE IS HERE ***
-      // We are now using the '/everything' endpoint and the 'q' parameter.
-      // This is allowed on the free plan.
-      const response = await axios.get(`https://newsapi.org/v2/everything`, {
+      const response = await axios.get('https://newsapi.org/v2/everything', {
         params: {
-          q: topic, // Search for the keyword
+          q: topic,
           language: 'en',
-          sortBy: 'publishedAt', // Get the latest
+          sortBy: 'publishedAt',
           apiKey: process.env.NEWS_API_KEY,
         }
       });
-      const articlesFromAPI = response.data.articles;
 
+      const articlesFromAPI = response.data.articles;
       const categoryToStore = topic === HOME_PAGE_TOPIC ? 'general' : topic;
 
       for (const article of articlesFromAPI) {
         if (!article.url || !article.title || article.title === '[Removed]') continue;
 
         const existing = await db.query('SELECT id FROM articles WHERE url = $1', [article.url]);
-        if (existing.rows.length > 0) {
-          continue;
-        }
+        if (existing.rows.length > 0) continue;
 
         const insertQuery = `
           INSERT INTO articles (title, url, source, description, content, image_url, category, published_at)
@@ -106,14 +98,14 @@ const fetchNewsAndStore = async () => {
           article.description,
           article.content,
           article.urlToImage,
-          categoryToStore, // Store it under the correct category name
+          categoryToStore,
           article.publishedAt
         ];
         await db.query(insertQuery, values);
       }
       console.log(`-- Successfully stored articles for topic: ${topic}`);
     } catch (err) {
-      if (err.response && err.response.status === 426) {
+      if (err.response?.status === 426) {
         console.error(`Error for topic "${topic}": NewsAPI free plan cannot be used on a server. This is a known limitation for localhost development.`);
       } else {
         console.error(`Error fetching news for topic ${topic}:`, err.message);
@@ -123,13 +115,15 @@ const fetchNewsAndStore = async () => {
   console.log('BACKGROUND JOB: Finished fetching all categories.');
 };
 
+// --- START SERVER ---
 const startServer = async () => {
   await db.setupDatabase();
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Backend server is live and listening on port ${PORT}`);
+    console.log(`✅ Backend server is live and listening on port ${PORT}`);
   });
 
+  // Run job every hour
   cron.schedule('0 * * * *', fetchNewsAndStore);
 
   console.log('Running initial news fetch on server start...');
