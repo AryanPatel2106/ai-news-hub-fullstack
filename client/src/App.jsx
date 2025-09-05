@@ -23,11 +23,11 @@ const Header = ({ searchTerm, setSearchTerm, activeCategory }) => (
             </div>
             <div className="relative w-full sm:w-auto sm:max-w-xs">
                 <SearchIcon />
-                <input 
-                    type="text" 
-                    placeholder={`Search in ${activeCategory}...`} 
-                    value={searchTerm} 
-                    onChange={(e) => setSearchTerm(e.target.value)} 
+                <input
+                    type="text"
+                    placeholder={`Search in ${activeCategory}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-12 pr-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
             </div>
         </div>
@@ -117,7 +117,7 @@ const LoadingState = () => (
 
 const EmptyState = () => (
     <div className="w-full text-center py-16 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         <h3 className="mt-2 text-xl font-semibold text-gray-900 dark:text-white">No Articles Found</h3>
         <p className="mt-1 text-base text-gray-500 dark:text-gray-400">Try selecting a different category or refining your search.</p>
     </div>
@@ -135,7 +135,7 @@ const Footer = () => (
 
 // --- MAIN APP COMPONENT ---
 export default function App() {
-    // THIS IS THE NEW, SIMPLIFIED STATE. IT HOLDS THE ARTICLES FOR THE CURRENTLY VIEWED CATEGORY.
+    // THIS IS THE NEW, SIMPLIFIED STATE. IT HOLDS ONLY THE ARTICLES FOR THE CURRENTLY VIEWED CATEGORY.
     const [articles, setArticles] = useState([]);
     
     const [activeCategory, setActiveCategory] = useState('home');
@@ -153,7 +153,7 @@ export default function App() {
             try {
                 const response = await axios.get(`${API_BASE_URL}/api/articles?category=${activeCategory}`);
                 // It fetches the data and directly saves it into our simple 'articles' state.
-                setArticles(response.data); 
+                setArticles(response.data);
             } catch (err) {
                 console.error("Frontend Fetch Error:", err);
                 setError("Failed to connect to the server. Is the backend running?");
@@ -163,7 +163,8 @@ export default function App() {
         };
 
         fetchArticles();
-    }, [activeCategory]); // The dependency array is now simple and correct.
+    // The dependency array is now simple and correct, ONLY watching for changes in the category.
+    }, [activeCategory]);
 
     // This is the new, simplified filtering logic.
     const articlesToDisplay = useMemo(() => {
